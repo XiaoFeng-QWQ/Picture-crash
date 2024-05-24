@@ -3,14 +3,16 @@
 
 我太无聊了(?
 
-这是原图:
+## 效果预览
 
-![](/0.gif)
+![](/img/README/effect-preview/0.gif)
 
-![](/1.gif)
+![](/img/README/effect-preview/1.gif)
 
-![](/2.gif)
+![](/img/README/effect-preview/3.gif)
 
-![](/3.gif)
+![](/img/README/effect-preview/4.gif)
 
-![](/4.gif)
+![](/img/README/effect-preview/5.gif)
+
+![](/img/README/effect-preview/6.gif)
