@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片转换和崩坏</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+        }
+
+        img {
+            max-width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>图片转换和崩坏</h2>
+        <input type="file" id="fileInput" accept="image/*">
+        <button onclick="convertToBase64()">转换为Base64</button>
+        <textarea id="base64Result" placeholder="Base64 结果将会显示在这里..."></textarea>
+        <button onclick="corruptImage()">崩坏图片</button>
+        <div id="imageContainer"></div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const imageContainer = document.getElementById('imageContainer');
+        const base64Result = document.getElementById('base64Result');
+
+        // 图片转换为Base64
+        function convertToBase64() {
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    base64Result.value = e.target.result;
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    imageContainer.innerHTML = '';
+                    imageContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 图片崩坏
+        function corruptImage() {
+            const img = imageContainer.querySelector('img');
+            if (img) {
+                // 获取Base64编码的图片数据
+                let base64Data = img.src.split(',')[1];
+                // 获取Base64编码的图片数据的长度
+                const dataLength = base64Data.length;
+                // 计算要修改的字节位置，确保留下足够的空间来进行偏移
+                const startIndex = Math.floor(Math.random() * (dataLength - 5));
+                // 计算随机偏移量
+                const offset = Math.floor(Math.random() * 1) + 3;
+                // 获取要修改的字符
+                const charToModify = base64Data.charAt(startIndex);
+                // 计算偏移后的字符
+                const modifiedChar = String.fromCharCode(charToModify.charCodeAt(0) + offset);
+                // 构建修改后的Base64数据
+                base64Data = base64Data.substring(0, startIndex) +
+                    modifiedChar +
+                    base64Data.substring(startIndex + 1);
+                // 创建新的图片对象并替换原始图片
+                const corruptedImg = new Image();
+                // 获取原始图片的MIME类型
+                const mimeType = img.src.split(';')[0].split(':')[1];
+                corruptedImg.onload = function () {
+                    // 图片加载完成后释放内存
+                    URL.revokeObjectURL(corruptedImg.src);
+                };
+                // 将原始图片的属性复制到损坏图片对象中
+                corruptedImg.src = `data:${mimeType};base64,${base64Data}`;
+                corruptedImg.alt = '图片彻底蹦了......'
+                imageContainer.innerHTML = '';
+                imageContainer.appendChild(corruptedImg);
+            } else {
+                alert('请先选择图片并转换为Base64！');
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
