@@ -12,14 +12,23 @@
     <div class="container">
         <h2>
             图片转换和崩坏
-            Github: https://github.com/XiaoFeng-QWQ/Picture-crash/
+            <a href="https://github.com/XiaoFeng-QWQ/Picture-crash/" target="_blank" rel="noopener noreferrer">出处</a>
         </h2>
         <input type="file" id="fileInput" accept="image/*">
         <button onclick="convertToBase64()">转换为Base64</button>
-        <textarea id="base64Result" placeholder="Base64 结果将会显示在这里..."></textarea>
+        <div>
+            <label for="base64Result">Base64 数据：</label>
+            <textarea id="base64Result" placeholder="Base64 结果将会显示在这里..."></textarea>
+        </div>
         <div id="corruptImageSettings">
-            <input type="number" value="5" name="startIndex" id="startIndex" placeholder="要修改的字节开始位置">
-            <input type="number" value="5" name="offset" id="offset" placeholder="随机偏移量">
+            <div>
+                <label for="offset">随机偏移量：</label>
+                <input type="number" value="5" name="offset" id="offset" placeholder="随机偏移量">
+            </div>
+            <div>
+                <label for="startIndex">要修改的字节开始位置：</label>
+                <input type="number" value="5" name="startIndex" id="startIndex" placeholder="要修改的字节开始位置">
+            </div>
         </div>
         <button onclick="corruptImage()">崩坏图片</button>
         <div id="imageContainer"></div>
