@@ -47,23 +47,25 @@ function corruptImage() {
     if (img) {
         let base64Data = img.src.split(',')[1];
         const numModifications = parseInt(settingsContainer.querySelector('#numModifications').value);
+        const offsetValue = parseInt(settingsContainer.querySelector('#offset').value);
         const dataLength = base64Data.length;
+        let corruptedBase64Data = base64Data.split('');
 
-        // 创建一个数组，存储要修改的位置
-        const modificationIndices = [];
-        for (let i = 0; i < numModifications; i++) {
-            modificationIndices.push(Math.floor(Math.random() * dataLength));
+        // 创建一个未被修改的位置索引数组
+        let availableIndices = Array.from({ length: dataLength }, (_, index) => index);
+
+        for (let i = 0; i < numModifications && availableIndices.length > 0; i++) {
+            let randomIndex = Math.floor(Math.random() * availableIndices.length);
+            let modifyIndex = availableIndices.splice(randomIndex, 1)[0]; // 随机选择一个索引并从数组中移除
+
+            // 计算随机字符的偏移量
+            const offset = Math.floor(Math.random() * offsetValue);
+            // 获取当前位置的字符编码，然后加上偏移量
+            const charCode = corruptedBase64Data[modifyIndex].charCodeAt(0) + offset;
+            corruptedBase64Data[modifyIndex] = String.fromCharCode(charCode % 256); // 使用模256确保字符编码的有效性
         }
 
-        // 修改Base64数据
-        const corruptedBase64Data = base64Data.split('');
-        modificationIndices.forEach(index => {
-            const offset = Math.floor(Math.random() * parseInt(settingsContainer.querySelector('#offset').value));
-            const charCode = corruptedBase64Data[index].charCodeAt(0) + offset;
-            corruptedBase64Data[index] = String.fromCharCode(charCode);
-        });
-
-        // 生成损坏图片
+        // 生成并显示损坏的图片
         const mimeType = img.src.split(';')[0].split(':')[1];
         const corruptedImgSrc = `data:${mimeType};base64,${corruptedBase64Data.join('')}`;
         displayImage(corruptedImgSrc);
@@ -71,15 +73,4 @@ function corruptImage() {
     } else {
         alert('请先选择图片并转换为Base64！');
     }
-}
-
-/**
- * 替换字符串中指定位置的字符
- * @param {string} str - 要修改的字符串
- * @param {number} index - 要修改的位置
- * @param {string} char - 修改后的字符
- * @returns {string} - 修改后的字符串
- */
-function replaceCharAt(str, index, char) {
-    return str.substring(0, index) + char + str.substring(index + 1);
 }
